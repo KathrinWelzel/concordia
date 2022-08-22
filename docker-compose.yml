@@ -1,0 +1,35 @@
+
+volumes:
+  joomla_setup:
+    driver: local
+
+services:
+  concordia:
+    container_name: "concordia_web"
+    restart: on-failure:5
+    ports:
+      - "8080:80"
+    image: joomla
+    environment:
+      - JOOMLA_DB_HOST=concordiadb
+      - JOOMLA_DB_USER=joomla
+      - JOOMLA_DB_PASSWORD=joomlapassword
+      - JOOMLA_DB_NAME=joomla
+    volumes:
+      - ./data:/var/www/html
+      - ./php/php.ini:/usr/local/etc/php/php.ini
+      #- ./data/images:/var/www/html/images
+      #- ./data/templates:/var/www/html/templates
+      #- ./config/docker-php.conf:/etc/apache2/conf-enabled/docker-php.conf
+      #- ./config/configuration.php:/var/www/html/configuration.php
+
+  concordiadb:
+    image: mariadb
+    restart: on-failure:5
+    volumes:
+      - ./database:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=superpassword
+      - MYSQL_DATABASE=joomla
+      - MYSQL_USER=joomla
+      - MYSQL_PASSWORD=joomlapassword
